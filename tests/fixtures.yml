@@ -1,0 +1,7 @@
+Dynamic\Elements\StatCounters\Elements\ElementStatCounters:
+  one:
+    Title: 'Stat Counter One'
+
+Dynamic\Elements\StatCounters\Model\StatCounter:
+  one:
+    Title: 'Stat One'
