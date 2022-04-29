@@ -6,9 +6,13 @@ use DNADesign\Elemental\Models\BaseElement;
 use Dynamic\Elements\StatCounters\Model\StatCounter;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
+use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use Symbiote\GridFieldExtensions\GridFieldAddNewInlineButton;
+use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
@@ -61,10 +65,16 @@ class ElementStatCounters extends BaseElement
                 $config->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
                     GridFieldDeleteAction::class,
+                    GridFieldAddNewButton::class,
                 ])->addComponents([
                     new GridFieldDeleteAction(false),
-                    new GridFieldOrderableRows('SortOrder'),
+                    GridFieldOrderableRows::create('SortOrder'),
+                    $columns = new GridFieldEditableColumns(),
+                    $addButton = new GridFieldAddNewInlineButton()
                 ]);
+
+                $addButton->setTitle('Add Stat Counter');
+
                 $fields->addFieldToTab('Root.Main', $stats);
             }
         });

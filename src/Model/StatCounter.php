@@ -37,7 +37,7 @@ class StatCounter extends DataObject
         'Statistic' => 'Decimal',
         'Label' => 'Varchar(20)',
         'SortOrder' => 'Int',
-        'StatType' => 'Varchar',
+        'StatType' => 'Enum(array("Int","Decimal","Currency","Percentage"))',
     ];
 
     /**
@@ -54,7 +54,14 @@ class StatCounter extends DataObject
         'Label',
         'Statistic',
         'Title',
-        'StatTypeName',
+        'StatType',
+    ];
+
+    /**
+     * @var string[]
+     */
+    private static $defaults = [
+        'StatType' => DBInt::class,
     ];
 
     /**
