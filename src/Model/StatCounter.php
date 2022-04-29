@@ -4,12 +4,28 @@ namespace Dynamic\Elements\StatCounters\Model;
 
 use Dynamic\Elements\StatCounters\Elements\ElementStatCounters;
 use phpDocumentor\Reflection\Element;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBCurrency;
+use SilverStripe\ORM\FieldType\DBDecimal;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBInt;
+use SilverStripe\ORM\FieldType\DBPercentage;
 
 /**
  * Class StatCounter
  * @package Dynamic\Elements\StatCounters\Model
+ *
+ * @property string $Title
+ * @property float $Statistic
+ * @property string $Label
+ * @property int $SortOrder
+ * @property string $StatType
+ * @property int $ElementStatCounters
+ *
+ * @method ElementStatCounters ElementStatCounters
  */
 class StatCounter extends DataObject
 {
@@ -20,6 +36,8 @@ class StatCounter extends DataObject
         'Title' => 'Varchar(255)',
         'Statistic' => 'Decimal',
         'Label' => 'Varchar(20)',
+        'SortOrder' => 'Int',
+        'StatType' => 'Varchar',
     ];
 
     /**
@@ -33,10 +51,26 @@ class StatCounter extends DataObject
      * @var array
      */
     private static $summary_fields = [
-        'Statistic',
         'Label',
+        'Statistic',
         'Title',
+        'StatTypeName',
     ];
+
+    /**
+     * @var string[]
+     */
+    private static $stat_types = [
+        DBInt::class => 'Number',
+        DBDecimal::class => 'Decimal',
+        DBCurrency::class => 'Currency',
+        DBPercentage::class => 'Percentage',
+    ];
+
+    /**
+     * @var string
+     */
+    private static $default_sort = 'SortOrder';
 
     /**
      * @var string
@@ -49,20 +83,53 @@ class StatCounter extends DataObject
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $label = $fields->dataFieldByName('Label');
+            $stat = $fields->dataFieldByName('Statistic');
+            $title = $fields->dataFieldByName('Title');
+
             $fields->removeByName([
                 'ElementStatCountersID',
+                'SortOrder',
+                'SiteConfigID',
+                'Statistic',
+                'Title',
+                'Label',
+                'StatType',
             ]);
 
-            $fields->addFieldsToTab(
+            $fields->addFieldToTab(
                 'Root.Main',
-                [
-                    $fields->dataFieldByName('Statistic'),
-                    $fields->dataFieldByName('Label'),
-                ],
-                'Title'
+                FieldGroup::create([
+                    $label,
+                    $stat,
+                    $title,
+                    DropdownField::create('StatType')
+                        ->setSource($this->config()->get('stat_types'))
+                        ->setTitle('Setting the stat type helps ensure the number is formatted properly'),
+                ])
             );
         });
 
         return parent::getCMSFields();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatTypeName()
+    {
+        $types = $this->config()->get('stat_types');
+
+        return isset($types[$this->StatType]) ? $types[$this->StatType] : $types[DBDecimal::class];
+    }
+
+    /**
+     * @return DBField
+     */
+    public function getStatNumber()
+    {
+        $types = $this->config()->get('stat_types');
+
+        return DBField::create_field($this->StatType, $this->Statistic);
     }
 }

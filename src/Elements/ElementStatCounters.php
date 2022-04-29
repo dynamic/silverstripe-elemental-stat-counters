@@ -9,6 +9,7 @@ use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * Class ElementStatCounters
@@ -57,14 +58,13 @@ class ElementStatCounters extends BaseElement
             if ($stats = $fields->dataFieldByName('Stats')) {
                 $fields->removeByName('Stats');
                 $config = $stats->getConfig();
-                $config->
-                    removeComponentsByType([
-                        GridFieldAddExistingAutocompleter::class,
+                $config->removeComponentsByType([
+                    GridFieldAddExistingAutocompleter::class,
                     GridFieldDeleteAction::class,
-                    ])
-                    ->addComponents([
-                        new GridFieldDeleteAction(false),
-                    ]);
+                ])->addComponents([
+                    new GridFieldDeleteAction(false),
+                    new GridFieldOrderableRows('SortOrder'),
+                ]);
                 $fields->addFieldToTab('Root.Main', $stats);
             }
         });
@@ -100,6 +100,6 @@ class ElementStatCounters extends BaseElement
      */
     public function getType()
     {
-        return _t(__CLASS__.'.BlockType', 'Stat Counters');
+        return _t(__CLASS__ . '.BlockType', 'Stat Counters');
     }
 }
