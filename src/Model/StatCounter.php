@@ -61,17 +61,7 @@ class StatCounter extends DataObject
      * @var string[]
      */
     private static $defaults = [
-        'StatType' => DBInt::class,
-    ];
-
-    /**
-     * @var string[]
-     */
-    private static $stat_types = [
-        DBInt::class => 'Number',
-        DBDecimal::class => 'Decimal',
-        DBCurrency::class => 'Currency',
-        DBPercentage::class => 'Percentage',
+        'StatType' => 'Int',
     ];
 
     /**
@@ -118,16 +108,6 @@ class StatCounter extends DataObject
         });
 
         return parent::getCMSFields();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatTypeName()
-    {
-        $types = $this->config()->get('stat_types');
-
-        return isset($types[$this->StatType]) ? $types[$this->StatType] : $types[DBDecimal::class];
     }
 
     /**
