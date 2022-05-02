@@ -32,8 +32,9 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "7.3"
           - "7.4"
+          - "8.0"
+          - "8.1"
 
     steps:
       - name: "Checkout"
@@ -70,5 +71,5 @@ jobs:
           files: ./coverage.xml # optional
           flags: unittests # optional
 
-      #- name: "Run tests with squizlabs/php_codesniffer"
-      #  run: "vendor/bin/phpcs -s --report=summary --standard=phpcs.xml.dist --extensions=php,inc --ignore=autoload.php --ignore=vendor/ src/ tests/"
+      - name: "Run tests with squizlabs/php_codesniffer"
+        run: "vendor/bin/phpcs -s --report=summary --standard=phpcs.xml.dist --extensions=php,inc --ignore=autoload.php --ignore=vendor/ src/ tests/"
