@@ -101,7 +101,7 @@ class StatCounter extends DataObject
                     $stat,
                     $title,
                     DropdownField::create('StatType')
-                        ->setSource($this->config()->get('stat_types'))
+                        ->setSource($this->dbObject('StatType')->enumValues())
                         ->setTitle('Setting the stat type helps ensure the number is formatted properly'),
                 ])
             );
@@ -115,8 +115,6 @@ class StatCounter extends DataObject
      */
     public function getStatNumber()
     {
-        $types = $this->config()->get('stat_types');
-
         return DBField::create_field($this->StatType, $this->Statistic);
     }
 }
