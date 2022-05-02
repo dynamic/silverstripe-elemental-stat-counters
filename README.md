@@ -2,11 +2,7 @@
 
 Statistic counters block for Silverstripe Elemental
 
-[![Build Status](https://travis-ci.org/dynamic/silverstripe-elemental-stat-counters.svg?branch=master)](https://travis-ci.org/dynamic/silverstripe-elemental-stat-counters)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/badges/build.png?b=master)](https://scrutinizer-ci.com/g/dynamic/silverstripe-elemental-stat-counters/build-status/master)
-[![codecov](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters)
+![Build](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml/badge.svg)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/stable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/downloads)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)

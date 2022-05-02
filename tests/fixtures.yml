@@ -5,3 +5,13 @@ Dynamic\Elements\StatCounters\Elements\ElementStatCounters:
 Dynamic\Elements\StatCounters\Model\StatCounter:
   one:
     Title: 'Stat One'
+    StatType: 'Int'
+  two:
+    Title: 'Stat One'
+    StatType: 'Decimal'
+  three:
+    Title: 'Stat One'
+    StatType: 'Currency'
+  four:
+    Title: 'Stat One'
+    StatType: 'Percentage'
