@@ -34,10 +34,10 @@ class StatCounter extends DataObject
      */
     private static $db = [
         'Title' => 'Varchar(255)',
-        'Statistic' => 'Decimal',
+        'Statistic' => 'Varchar',
         'Label' => 'Varchar(20)',
         'SortOrder' => 'Int',
-        'StatType' => 'Enum(array("Int","Decimal","Currency","Percentage"))',
+        'StatType' => 'Enum(array("Natural","Int","Decimal","Currency","Percentage"))',
     ];
 
     /**
@@ -102,7 +102,8 @@ class StatCounter extends DataObject
                     $title,
                     DropdownField::create('StatType')
                         ->setSource($this->dbObject('StatType')->enumValues())
-                        ->setTitle('Setting the stat type helps ensure the number is formatted properly'),
+                        ->setTitle('Setting the stat type helps ensure the number is formatted properly')
+                        ->setDescription('Note: the Natural option displays the number as you type it in'),
                 ])
             );
         });
@@ -115,6 +116,8 @@ class StatCounter extends DataObject
      */
     public function getStatNumber()
     {
-        return DBField::create_field($this->StatType, $this->Statistic);
+        return $this->StatType == 'Natural'
+            ? $this->Statistic
+            : DBField::create_field($this->StatType, $this->Statistic);
     }
 }
