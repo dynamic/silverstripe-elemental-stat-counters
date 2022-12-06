@@ -1,33 +1,43 @@
 {
     "name": "dynamic/silverstripe-elemental-stat-counters",
     "description": "Statistic counters block for Silverstripe Elemental",
+    "license": "BSD-3-Clause",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "silverstripe",
+        "CMS",
+        "elemental",
+        "statistic",
+        "counter"
+    ],
     "authors": [
         {
             "name": "Dynamic",
             "email": "dev@dynamicagency.com",
-            "homepage": "http://www.dynamicagency.com"
+            "homepage": "https://www.dynamicagency.com"
         }
     ],
-    "keywords": [
-        "silverstripe", "CMS", "elemental", "statistic", "counter"
-    ],
-    "type": "silverstripe-vendormodule",
-    "license": "BSD-3-Clause",
     "require": {
         "dnadesign/silverstripe-elemental": "^4.0"
     },
     "require-dev": {
-        "silverstripe/recipe-testing": "^2",
-        "squizlabs/php_codesniffer": "^3.0"
+        "silverstripe/recipe-testing": "^2"
     },
-    "config": {
-        "process-timeout": 600
-    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Dynamic\\Elements\\StatCounters\\": "src/",
             "Dynamic\\Elements\\StatCounters\\Test\\": "tests/"
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "silverstripe/vendor-plugin": true,
+            "silverstripe/recipe-plugin": true
+        },
+        "process-timeout": 600
     },
     "extra": {
         "branch-alias": {
@@ -36,7 +46,5 @@
         "expose": [
             "client/src"
         ]
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
