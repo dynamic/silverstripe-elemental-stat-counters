@@ -3,6 +3,7 @@
 Statistic counters block for Silverstripe Elemental
 
 ![Build](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/stable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/downloads)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
@@ -24,29 +25,17 @@ composer require dynamic/silverstripe-elemental-stat-counters
 ## License
 See [License](license.md)
 
-## Example configuration (optional)
-If your module makes use of the config API in SilverStripe it's a good idea to provide an example config
- here that will get the module working out of the box and expose the user to the possible configuration options.
+## Usage
 
-Provide a yaml code example where possible.
+Displays multiple statistics in a row. Stats will animate upwards from 0 until they hit the entered number.
 
-```yaml
-
-Page:
-  config_option: true
-  another_config:
-    - item1
-    - item2
-
-```
 ## Getting more elements
 
-See [Elemental modules by Dynamic](https://github.com/dynamic/silverstripe-elemental-blocks#getting-more-elements)
+See [Elemental modules by Dynamic](https://github.com/orgs/dynamic/repositories?q=elemental&type=all&language=&sort=)
 
 ## Configuration
 
 See [SilverStripe Elemental Configuration](https://github.com/dnadesign/silverstripe-elemental#configuration)
-
 
 ## Maintainers
  *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
