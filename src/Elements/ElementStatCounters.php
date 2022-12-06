@@ -24,7 +24,19 @@ class ElementStatCounters extends BaseElement
     /**
      * @var string
      */
-    //private static $icon = 'font-icon-block-banner';
+    private static $icon = 'font-icon-graph-bar';
+
+    /**
+     * @var string
+     */
+    private static $table_name = 'ElementStatCounters';
+
+    /**
+     * @var array
+     */
+    private static $db = [
+        'Content' => 'HTMLText',
+    ];
 
     /**
      * @return string
@@ -44,11 +56,6 @@ class ElementStatCounters extends BaseElement
     ];
 
     /**
-     * @var string
-     */
-    private static $table_name = 'ElementStatCounters';
-
-    /**
      * @var bool
      */
     private static $inline_editable = false;
@@ -59,6 +66,9 @@ class ElementStatCounters extends BaseElement
     public function getCMSFields()
     {
         $this->beforeUpdateCMSFields(function (FieldList $fields) {
+            $fields->dataFieldByName('Content')
+                ->setRows(8);
+
             if ($stats = $fields->dataFieldByName('Stats')) {
                 $fields->removeByName('Stats');
                 $config = $stats->getConfig();
