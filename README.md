@@ -13,8 +13,8 @@ Statistic counters block for Silverstripe Elemental
 
 ## Requirements
 
-* Silverstripe ^4.3
-* Silverstripe Elemental ^4.0
+* Silverstripe ^5
+* Silverstripe Elemental ^5
 
 ## Installation
 
