@@ -29,6 +29,11 @@ See [License](license.md)
 
 Displays multiple statistics in a row. Stats will animate upwards from 0 until they hit the entered number.
 
+## Screen Shots
+
+#### Default Bootstrap template with animated count-up
+![Default Boostrap template](./docs/en/_images/stat-counters-block.png)
+
 ## Getting more elements
 
 See [Elemental modules by Dynamic](https://github.com/orgs/dynamic/repositories?q=elemental&type=all&language=&sort=)
