@@ -4,7 +4,7 @@
 <% if $Stats %>
     <div class="row element__stat__counters">
         <% loop $Stats %>
-            <div class="col-lg-3 col-md-4 col-sm-6 mb-4 element__stats__item">
+            <div class="col-lg-3 col-md-4 col-6 mb-4 element__stats__item">
                 <div class="card h-100">
                     <div class="card-body stats__stat">
                         <h3 class="card-title stat__statistic"><span class="number">$StatNumber</span><% if $Label %> $Label<% end_if %></h3>
