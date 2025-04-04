@@ -56,6 +56,23 @@ class ElementStatCounters extends BaseElement
     ];
 
     /**
+     * @var array
+     * @config
+     */
+    private static $cascade_duplicates = [
+        'Stats',
+    ];
+
+    /**
+     * @var array
+     * @config
+     */
+    private static array $cascade_deletes = [
+        'Stats',
+    ];
+
+
+    /**
      * @var bool
      */
     private static $inline_editable = false;
