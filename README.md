@@ -3,18 +3,18 @@
 Statistic counters block for Silverstripe Elemental
 
 ![Build](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters/branch/master/graph/badge.svg)](https://codecov.io/gh/dynamic/silverstripe-elemental-stat-counters)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/dynamic)](https://github.com/sponsors/dynamic)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/stable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/downloads)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
-[![Latest Unstable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/unstable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![License](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/license)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 
 
 ## Requirements
 
-* Silverstripe ^5
-* Silverstripe Elemental ^5
+* Silverstripe ^6
+* Silverstripe Elemental ^6
+* PHP ^8.3
 
 ## Installation
 
@@ -25,9 +25,29 @@ composer require dynamic/silverstripe-elemental-stat-counters
 ## License
 See [License](license.md)
 
+## Features
+
+* Display animated statistics counters in Elemental content areas
+* Multiple statistics displayed in a responsive row layout
+* Count-up animation from 0 to entered number
+* Bootstrap-based default styling
+* Customizable counter text and values
+* Supports any numeric value format
+* Mobile-responsive design
+
 ## Usage
 
 Displays multiple statistics in a row. Stats will animate upwards from 0 until they hit the entered number.
+
+## Upgrading from version 3.x
+
+SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key changes:
+
+- Updated to SilverStripe CMS 6
+- Requires PHP 8.3 or higher
+- Requires Elemental 6 (`dnadesign/silverstripe-elemental: ^6` - previously `^5.0`)
+- Updated dependencies to SS6 compatible versions
+- No API changes - maintains full backward compatibility with 3.x
 
 ## Screen Shots
 
@@ -43,7 +63,7 @@ See [Elemental modules by Dynamic](https://github.com/orgs/dynamic/repositories?
 See [SilverStripe Elemental Configuration](https://github.com/dnadesign/silverstripe-elemental#configuration)
 
 ## Maintainers
- *  [Dynamic](http://www.dynamicagency.com) (<dev@dynamicagency.com>)
+ *  [Dynamic](https://www.dynamicagency.com) (<dev@dynamicagency.com>)
 
 ## Bugtracker
 Bugs are tracked in the issues section of this repository. Before submitting an issue please read over
