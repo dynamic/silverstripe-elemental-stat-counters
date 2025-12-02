@@ -41,12 +41,12 @@ class ElementStatCounters extends BaseElement
     /**
      * @return string
      */
-    private static $singular_name = 'Stat Counters Element';
+    private static $singular_name = 'Stat Counters';
 
     /**
      * @return string
      */
-    private static $plural_name = 'Stat Counters Elements';
+    private static $plural_name = 'Stat Counters Blocks';
 
     /**
      * @var array
@@ -130,13 +130,5 @@ class ElementStatCounters extends BaseElement
         $blockSchema = parent::provideBlockSchema();
         $blockSchema['content'] = $this->getSummary();
         return $blockSchema;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return _t(__CLASS__ . '.BlockType', 'Stat Counters');
     }
 }
