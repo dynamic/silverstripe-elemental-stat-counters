@@ -39,12 +39,12 @@ class ElementStatCounters extends BaseElement
     ];
 
     /**
-     * @return string
+     * @var string
      */
     private static $singular_name = 'Stat Counters';
 
     /**
-     * @return string
+     * @var string
      */
     private static $plural_name = 'Stat Counters Blocks';
 
