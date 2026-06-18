@@ -46,7 +46,7 @@ SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key 
 
 - Updated to SilverStripe CMS 6
 - Requires PHP 8.3 or higher
-- Requires Elemental 6 ( - previously )
+- Requires Elemental 6 (`dnadesign/silverstripe-elemental: ^6` - previously `^5.0`)
 - Updated dependencies to SS6 compatible versions
 - No API changes - maintains full backward compatibility with 3.x
 
