@@ -1,20 +1,20 @@
-# Silvertripe Elemental Stat Counters
+# Silverstripe Elemental Stat Counters
 
 Statistic counters block for Silverstripe Elemental
 
-![Build](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml/badge.svg)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/dynamic)](https://github.com/sponsors/dynamic)
+[![CI](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml/badge.svg)](https://github.com/dynamic/silverstripe-elemental-stat-counters/actions/workflows/ci.yml) [![Sponsors](https://img.shields.io/badge/GitHub-Sponsors-ff69b4?logo=github)](https://github.com/sponsors/dynamic)
 
 [![Latest Stable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/stable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![Total Downloads](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/downloads)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
+[![Latest Unstable Version](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/v/unstable)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 [![License](https://poser.pugx.org/dynamic/silverstripe-elemental-stat-counters/license)](https://packagist.org/packages/dynamic/silverstripe-elemental-stat-counters)
 
 
 ## Requirements
 
-* Silverstripe ^6
-* Silverstripe Elemental ^6
-* PHP ^8.3
+* PHP: ^8.3
+* Silverstripe: ^6
+* dnadesign/silverstripe-elemental: ^6.0
 
 ## Installation
 
@@ -23,7 +23,8 @@ composer require dynamic/silverstripe-elemental-stat-counters
 ```
 
 ## License
-See [License](license.md)
+
+See [License](LICENSE.md)
 
 ## Features
 
@@ -45,14 +46,14 @@ SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key 
 
 - Updated to SilverStripe CMS 6
 - Requires PHP 8.3 or higher
-- Requires Elemental 6 (`dnadesign/silverstripe-elemental: ^6` - previously `^5.0`)
+- Requires Elemental 6 ( - previously )
 - Updated dependencies to SS6 compatible versions
 - No API changes - maintains full backward compatibility with 3.x
 
 ## Screen Shots
 
 #### Default Bootstrap template with animated count-up
-![Default Boostrap template](./docs/en/_images/stat-counters-block.png)
+![Default Bootstrap template](./docs/en/_images/stat-counters-block.png)
 
 ## Getting more elements
 
@@ -63,9 +64,11 @@ See [Elemental modules by Dynamic](https://github.com/orgs/dynamic/repositories?
 See [SilverStripe Elemental Configuration](https://github.com/dnadesign/silverstripe-elemental#configuration)
 
 ## Maintainers
+
  *  [Dynamic](https://www.dynamicagency.com) (<dev@dynamicagency.com>)
 
 ## Bugtracker
+
 Bugs are tracked in the issues section of this repository. Before submitting an issue please read over
 existing issues to ensure yours is unique.
 
@@ -80,4 +83,5 @@ If the issue does look like a new bug:
 Please report security issues to the module maintainers directly. Please don't file security issues in the bugtracker.
 
 ## Development and contribution
+
 If you would like to make contributions to the module please ensure you raise a pull request and discuss with the module maintainers.
