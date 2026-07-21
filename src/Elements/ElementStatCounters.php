@@ -100,6 +100,15 @@ class ElementStatCounters extends BaseElement
                     $addButton = new GridFieldAddNewInlineButton()
                 ]);
 
+                // Explicitly declare the editable columns. Without this,
+                // GridFieldEditableColumns falls back to resolving each column
+                // against the Stat's own getCMSFields(), which other extensions
+                // (e.g. StatCountersExtension) may remove fields from for
+                // unrelated reasons — silently making a saved row's column
+                // read-only instead of editable. Declaring displayFields here
+                // decouples this inline grid from that lookup entirely.
+                $columns->setDisplayFields(StatCounter::singleton()->summaryFields());
+
                 $addButton->setTitle('Add Stat Counter');
 
                 $fields->addFieldToTab('Root.Main', $stats);
