@@ -18,6 +18,5 @@
 
 <% if $Stats %>
     <% require javascript('dynamic/silverstripe-elemental-stat-counters: client/src/counter-up.min.js') %>
-    <% require javascript(https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js) %>
     <% require javascript('dynamic/silverstripe-elemental-stat-counters: client/src/counterUp-block_init.js') %>
 <% end_if %>
