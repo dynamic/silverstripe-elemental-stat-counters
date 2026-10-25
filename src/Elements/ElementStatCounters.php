@@ -94,10 +94,10 @@ class ElementStatCounters extends BaseElement
                     GridFieldDeleteAction::class,
                     GridFieldAddNewButton::class,
                 ])->addComponents([
-                    new GridFieldDeleteAction(false),
+                    GridFieldDeleteAction::create(false),
                     GridFieldOrderableRows::create('SortOrder'),
-                    $columns = new GridFieldEditableColumns(),
-                    $addButton = new GridFieldAddNewInlineButton()
+                    $columns = GridFieldEditableColumns::create(),
+                    $addButton = GridFieldAddNewInlineButton::create()
                 ]);
 
                 // Explicitly declare the editable columns. Without this,
