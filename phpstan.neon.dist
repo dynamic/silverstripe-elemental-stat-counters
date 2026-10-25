@@ -1,24 +1,8 @@
+includes:
+  - vendor/cambis/silverstan/extension.neon
+
 parameters:
   level: 1
   treatPhpDocTypesAsCertain: false
   paths:
     - src
-  ignoreErrors:
-    # Pre-existing silverstan findings in src/, suppressed so that enabling PHPStan in
-    # CI stays a config-only change with no behaviour risk. Fix the code and remove
-    # these entries in the PR that closes dynamic/silverstripe-elemental-stat-counters#28.
-    -
-      message: '#^Use SilverStripe\\Forms\\GridField\\GridFieldDeleteAction::create\(\) instead of new SilverStripe\\Forms\\GridField\\GridFieldDeleteAction\(\)\.$#'
-      identifier: silverstan.injectable.useCreate
-      count: 1
-      path: src/Elements/ElementStatCounters.php
-    -
-      message: '#^Use Symbiote\\GridFieldExtensions\\GridFieldEditableColumns::create\(\) instead of new Symbiote\\GridFieldExtensions\\GridFieldEditableColumns\(\)\.$#'
-      identifier: silverstan.injectable.useCreate
-      count: 1
-      path: src/Elements/ElementStatCounters.php
-    -
-      message: '#^Use Symbiote\\GridFieldExtensions\\GridFieldAddNewInlineButton::create\(\) instead of new Symbiote\\GridFieldExtensions\\GridFieldAddNewInlineButton\(\)\.$#'
-      identifier: silverstan.injectable.useCreate
-      count: 1
-      path: src/Elements/ElementStatCounters.php
