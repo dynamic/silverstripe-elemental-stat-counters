@@ -1,1 +1,12 @@
-node_modules
+npm-debug.log
+node_modules/
+
+# Composer dependencies
+/vendor/
+
+# SilverStripe generated files
+/public/
+/app/
+/behat.yml
+/.phpunit.result.cache
+/composer.lock
