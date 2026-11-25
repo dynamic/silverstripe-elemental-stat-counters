@@ -56,6 +56,17 @@ class ElementStatCounters extends BaseElement
     ];
 
     /**
+     * Stats are versioned with the block: publishing the block publishes its
+     * stats, and draft edits to a stat do not reach the live page until then.
+     *
+     * @var array
+     * @config
+     */
+    private static $owns = [
+        'Stats',
+    ];
+
+    /**
      * @var array
      * @config
      */

@@ -50,6 +50,23 @@ SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key 
 - Updated dependencies to SS6 compatible versions
 - No API changes - maintains full backward compatibility with 3.x
 
+## Versioned stats
+
+Stats (`StatCounter`) are versioned and owned by their Stat Counters block. Editing, adding, reordering or
+deleting stats on a published block changes the draft only; the live page updates when the block (or its page)
+is published. Stats can be reverted with the page history.
+
+Upgrading a site that already has stats:
+
+- `dev/build` creates the `StatCounterObject_Live` and `StatCounterObject_Versions` tables.
+- During the same `dev/build`, every stat that predates versioning (no live row and no version history) is
+  published to Live once, so published blocks keep showing their stats. Only the stat rows are published: the
+  parent blocks and their other draft changes are not.
+- Stats that already have a live version are never overwritten, and stats created after the upgrade stay in draft
+  until their block is published, so later builds publish nothing.
+- The publish runs as part of the default records step, so a build with default records skipped
+  (`dev/build?populate=0`) does not perform it. Run a normal `dev/build` after upgrading.
+
 ## Screen Shots
 
 #### Default Bootstrap template with animated count-up
