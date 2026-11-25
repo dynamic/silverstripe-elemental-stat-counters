@@ -48,7 +48,7 @@ SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key 
 - Requires PHP 8.3 or higher
 - Requires Elemental 6 (`dnadesign/silverstripe-elemental: ^6` - previously `^5.0`)
 - Updated dependencies to SS6 compatible versions
-- No API changes - maintains full backward compatibility with 3.x
+- Stats are now versioned and owned by their block, see [Versioned stats](#versioned-stats). Templates and configuration are unchanged
 
 ## Versioned stats
 
@@ -64,8 +64,9 @@ Upgrading a site that already has stats:
   parent blocks and their other draft changes are not.
 - Stats that already have a live version are never overwritten, and stats created after the upgrade stay in draft
   until their block is published, so later builds publish nothing.
-- The publish runs as part of the default records step, so a build with default records skipped
-  (`dev/build?populate=0`) does not perform it. Run a normal `dev/build` after upgrading.
+- The publish runs as part of the default records step, so a build that skips default records
+  (`sake db:build --no-populate` or `dev/build?no-populate=1`) does not perform it. Run a normal `dev/build`
+  after upgrading.
 
 ## Screen Shots
 
