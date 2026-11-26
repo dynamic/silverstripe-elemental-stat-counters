@@ -8,6 +8,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\ORM\FieldType\DBField;
@@ -130,13 +131,27 @@ class StatCounter extends DataObject
      * block. Stats created through Versioned afterwards (Version > 0) are left
      * alone, so a draft-only stat is not published by a later dev/build, and a
      * row that already has a Live version is never overwritten. Once published
-     * a row has a Live version, so repeated builds publish nothing.
+     * a row has a Live version, so repeated builds publish nothing. The build
+     * output reports the number published, when there is at least one.
+     *
+     * Stats whose parent block has no Live row (never published, or missing)
+     * are published too. This is intentional: publishRecursive() on a block
+     * skips a Version 0 stat, so one left behind here would stay off the live
+     * page when its block is published. The block's template does not render a
+     * stat without a Live block, but archiving a never-published block leaves
+     * its stats' Live rows in place.
      */
     public function requireDefaultRecords()
     {
         parent::requireDefaultRecords();
 
-        $this->publishUnversionedStats();
+        $published = $this->publishUnversionedStats();
+        if ($published > 0) {
+            DB::alteration_message(
+                sprintf('Published %d existing stat counter(s) to Live', $published),
+                'changed'
+            );
+        }
     }
 
     /**
@@ -146,13 +161,16 @@ class StatCounter extends DataObject
      */
     protected function publishUnversionedStats(): int
     {
-        $stats = Versioned::get_by_stage(static::class, Versioned::DRAFT)
-            ->filter('Version', 0);
+        $table = DataObject::getSchema()->baseDataTable(static::class);
+        $liveTable = $this->stageTable($table, Versioned::LIVE);
 
-        $liveIDs = Versioned::get_by_stage(static::class, Versioned::LIVE)->column('ID');
-        if ($liveIDs) {
-            $stats = $stats->exclude('ID', $liveIDs);
-        }
+        $stats = Versioned::get_by_stage(static::class, Versioned::DRAFT)
+            ->filter('Version', 0)
+            ->where(sprintf(
+                'NOT EXISTS (SELECT 1 FROM "%1$s" WHERE "%1$s"."ID" = "%2$s"."ID")',
+                $liveTable,
+                $table
+            ));
 
         $published = 0;
         /** @var StatCounter $stat */

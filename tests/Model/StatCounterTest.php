@@ -6,6 +6,9 @@ use Dynamic\Elements\StatCounters\Elements\ElementStatCounters;
 use Dynamic\Elements\StatCounters\Model\StatCounter;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\ORM\FieldType\DBDecimal;
 use SilverStripe\ORM\FieldType\DBInt;
@@ -13,7 +16,9 @@ use SilverStripe\ORM\FieldType\DBPercentage;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLUpdate;
+use SilverStripe\Versioned\GridFieldArchiveAction;
 use SilverStripe\Versioned\Versioned;
+use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
 /**
  * Class StatCounterTest
@@ -194,6 +199,194 @@ class StatCounterTest extends SapphireTest
         StatCounter::singleton()->requireDefaultRecords();
 
         $this->assertNull($this->liveStat($stat->ID), 'A draft-only stat must stay off Live');
+    }
+
+    /**
+     * What a visitor sees: a published block's Stats() list on the Live stage
+     * returns the migrated stat.
+     */
+    public function testPublishedBlockListsMigratedStatOnLive()
+    {
+        $element = $this->createElement();
+        $element->publishSingle();
+        $stat = $this->createStat($element, 'Legacy');
+        $this->makeUnversioned($stat->ID);
+        $this->assertSame([], $this->liveStatTitles($element->ID));
+
+        StatCounter::singleton()->requireDefaultRecords();
+
+        $this->assertSame(['Legacy'], $this->liveStatTitles($element->ID));
+    }
+
+    /**
+     * Stats under a never-published block, or pointing at a block that no
+     * longer exists, are published as well, so publishing a block later shows
+     * its existing stats.
+     */
+    public function testBuildPublishesStatsWithoutALiveBlock()
+    {
+        $element = $this->createElement();
+        $draftStat = $this->createStat($element, 'Under draft block');
+        $orphan = StatCounter::create(['Title' => 'Orphan', 'StatType' => 'Int']);
+        $orphan->ElementStatCountersID = $element->ID + 1000;
+        $orphan->write();
+        $this->makeUnversioned($draftStat->ID);
+        $this->makeUnversioned($orphan->ID);
+
+        StatCounter::singleton()->requireDefaultRecords();
+
+        $this->assertNotNull($this->liveStat($draftStat->ID));
+        $this->assertNotNull($this->liveStat($orphan->ID));
+
+        ElementStatCounters::get()->byID($element->ID)->publishRecursive();
+
+        $this->assertSame(['Under draft block'], $this->liveStatTitles($element->ID));
+    }
+
+    /**
+     * The build output reports how many stats were published: only rows with
+     * Version 0 and no Live row count, and a later build prints nothing.
+     */
+    public function testBuildReportsPublishedCount()
+    {
+        $this->makeUnversioned($this->objFromFixture(StatCounter::class, 'one')->ID);
+        $this->makeUnversioned($this->objFromFixture(StatCounter::class, 'two')->ID);
+
+        // Version 0, but already on Live.
+        $alreadyLive = $this->objFromFixture(StatCounter::class, 'three');
+        $alreadyLive->publishSingle();
+        SQLUpdate::create('"StatCounterObject"', ['"Version"' => 0], ['"ID"' => $alreadyLive->ID])->execute();
+
+        // Fixture "four" is a draft-only stat written through Versioned.
+
+        $this->assertSame(
+            "  + Published 2 existing stat counter(s) to Live\n",
+            $this->buildOutput()
+        );
+        $this->assertSame('', $this->buildOutput(), 'A second build publishes and prints nothing');
+    }
+
+    /**
+     * Deleting a stat in the block's grid changes the draft only until the
+     * block is published again.
+     */
+    public function testStatDeletedInGridStaysOnLiveUntilBlockIsPublished()
+    {
+        $this->logInWithPermission('ADMIN');
+        $element = $this->createElement();
+        $this->createStat($element, 'Keep', 1);
+        $remove = $this->createStat($element, 'Remove', 2);
+        $element->publishRecursive();
+        $this->assertSame(['Keep', 'Remove'], $this->liveStatTitles($element->ID));
+
+        $grid = $this->statsGrid(ElementStatCounters::get()->byID($element->ID));
+        // Resolving the columns is when an archive action would drop the delete action.
+        $grid->getColumns();
+        $this->assertNull($grid->getConfig()->getComponentByType(GridFieldArchiveAction::class));
+        /** @var GridFieldDeleteAction|null $delete */
+        $delete = $grid->getConfig()->getComponentByType(GridFieldDeleteAction::class);
+        $this->assertNotNull($delete, 'The grid should offer a delete action');
+        $delete->handleAction($grid, 'deleterecord', ['RecordID' => $remove->ID], []);
+
+        $this->assertSame(['Keep'], $grid->getList()->column('Title'));
+        $this->assertNull($this->draftStat($remove->ID));
+        $this->assertSame(['Keep', 'Remove'], $this->liveStatTitles($element->ID));
+
+        ElementStatCounters::get()->byID($element->ID)->publishRecursive();
+
+        $this->assertSame(['Keep'], $this->liveStatTitles($element->ID));
+        $this->assertNull($this->liveStat($remove->ID), 'Publishing the block removes the Live row');
+    }
+
+    /**
+     * Reordering stats in the block's grid changes the draft only until the
+     * block is published again.
+     */
+    public function testReorderedStatsKeepLiveOrderUntilBlockIsPublished()
+    {
+        $element = $this->createElement();
+        $first = $this->createStat($element, 'First', 1);
+        $second = $this->createStat($element, 'Second', 2);
+        $element->publishRecursive();
+
+        $element = ElementStatCounters::get()->byID($element->ID);
+        $grid = $this->statsGrid($element);
+        /** @var GridFieldOrderableRows $orderable */
+        $orderable = $grid->getConfig()->getComponentByType(GridFieldOrderableRows::class);
+        $orderable->setImmediateUpdate(false);
+        $grid->setValue(['GridFieldEditableColumns' => [
+            $first->ID => ['SortOrder' => 2],
+            $second->ID => ['SortOrder' => 1],
+        ]]);
+        $orderable->handleSave($grid, $element);
+
+        $this->assertSame(
+            ['Second', 'First'],
+            ElementStatCounters::get()->byID($element->ID)->Stats()->column('Title')
+        );
+        $this->assertSame(['First', 'Second'], $this->liveStatTitles($element->ID));
+
+        ElementStatCounters::get()->byID($element->ID)->publishRecursive();
+
+        $this->assertSame(['Second', 'First'], $this->liveStatTitles($element->ID));
+    }
+
+    private function statsGrid(ElementStatCounters $element): GridField
+    {
+        /** @var GridField $grid */
+        $grid = $element->getCMSFields()->dataFieldByName('Stats');
+
+        return $grid;
+    }
+
+    private function createElement(): ElementStatCounters
+    {
+        $element = ElementStatCounters::create(['Title' => 'Block']);
+        $element->write();
+
+        return $element;
+    }
+
+    private function createStat(ElementStatCounters $element, string $title, int $sortOrder = 0): StatCounter
+    {
+        $stat = StatCounter::create(['Title' => $title, 'StatType' => 'Int', 'SortOrder' => $sortOrder]);
+        $stat->ElementStatCountersID = $element->ID;
+        $stat->write();
+
+        return $stat;
+    }
+
+    /**
+     * Titles from the block's Stats() list, with block and list read from Live.
+     *
+     * @return string[]
+     */
+    private function liveStatTitles(int $elementID): array
+    {
+        return Versioned::withVersionedMode(function () use ($elementID) {
+            Versioned::set_stage(Versioned::LIVE);
+            $element = ElementStatCounters::get()->byID($elementID);
+            $this->assertNotNull($element, 'The block must be on Live');
+
+            return $element->Stats()->column('Title');
+        });
+    }
+
+    /**
+     * Run the build step and return what it prints.
+     */
+    private function buildOutput(): string
+    {
+        DB::quiet(false);
+        ob_start();
+        try {
+            StatCounter::singleton()->requireDefaultRecords();
+        } finally {
+            $output = ob_get_clean();
+            DB::quiet();
+        }
+
+        return $output;
     }
 
     /**
