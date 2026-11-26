@@ -15,6 +15,7 @@ Statistic counters block for Silverstripe Elemental
 * PHP: ^8.3
 * Silverstripe: ^6
 * dnadesign/silverstripe-elemental: ^6.0
+* silverstripe/versioned: ^3
 
 ## Installation
 
@@ -61,7 +62,10 @@ Upgrading a site that already has stats:
 - `dev/build` creates the `StatCounterObject_Live` and `StatCounterObject_Versions` tables.
 - During the same `dev/build`, every stat that predates versioning (no live row and no version history) is
   published to Live once, so published blocks keep showing their stats. Only the stat rows are published: the
-  parent blocks and their other draft changes are not.
+  parent blocks and their other draft changes are not. The build output reports how many stats were published.
+- This includes stats whose block has never been published, so that publishing the block later shows them, and
+  stats whose block no longer exists. The block's template does not render a stat without a published block.
+  Archiving a block that was never published leaves its stats' live rows in the database.
 - Stats that already have a live version are never overwritten, and stats created after the upgrade stay in draft
   until their block is published, so later builds publish nothing.
 - The publish runs as part of the default records step, so a build that skips default records
