@@ -55,7 +55,8 @@ SilverStripe Elemental Stat Counters 4.0 is compatible with SilverStripe 6. Key 
 
 Stats (`StatCounter`) are versioned and owned by their Stat Counters block. Editing, adding, reordering or
 deleting stats on a published block changes the draft only; the live page updates when the block (or its page)
-is published. Stats can be reverted with the page history.
+is published. Stats can be reverted with the page history. A stat's own edit form also has publish, unpublish and
+archive actions, which change the live page straight away.
 
 Upgrading a site that already has stats:
 

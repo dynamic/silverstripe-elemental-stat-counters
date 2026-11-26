@@ -7,6 +7,7 @@ use Dynamic\Elements\StatCounters\Model\StatCounter;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\ORM\FieldType\DBDecimal;
@@ -15,6 +16,7 @@ use SilverStripe\ORM\FieldType\DBPercentage;
 use SilverStripe\ORM\Queries\SQLDelete;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Queries\SQLUpdate;
+use SilverStripe\Versioned\GridFieldArchiveAction;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
 
@@ -265,25 +267,35 @@ class StatCounterTest extends SapphireTest
     }
 
     /**
-     * Deleting a stat on a published block changes the draft only until the
+     * Deleting a stat in the block's grid changes the draft only until the
      * block is published again.
      */
-    public function testDeletedStatStaysOnLiveUntilBlockIsPublished()
+    public function testStatDeletedInGridStaysOnLiveUntilBlockIsPublished()
     {
+        $this->logInWithPermission('ADMIN');
         $element = $this->createElement();
         $this->createStat($element, 'Keep', 1);
         $remove = $this->createStat($element, 'Remove', 2);
         $element->publishRecursive();
         $this->assertSame(['Keep', 'Remove'], $this->liveStatTitles($element->ID));
 
-        $remove->delete();
+        $grid = $this->statsGrid(ElementStatCounters::get()->byID($element->ID));
+        // Resolving the columns is when an archive action would drop the delete action.
+        $grid->getColumns();
+        $this->assertNull($grid->getConfig()->getComponentByType(GridFieldArchiveAction::class));
+        /** @var GridFieldDeleteAction|null $delete */
+        $delete = $grid->getConfig()->getComponentByType(GridFieldDeleteAction::class);
+        $this->assertNotNull($delete, 'The grid should offer a delete action');
+        $delete->handleAction($grid, 'deleterecord', ['RecordID' => $remove->ID], []);
 
+        $this->assertSame(['Keep'], $grid->getList()->column('Title'));
         $this->assertNull($this->draftStat($remove->ID));
         $this->assertSame(['Keep', 'Remove'], $this->liveStatTitles($element->ID));
 
         ElementStatCounters::get()->byID($element->ID)->publishRecursive();
 
         $this->assertSame(['Keep'], $this->liveStatTitles($element->ID));
+        $this->assertNull($this->liveStat($remove->ID), 'Publishing the block removes the Live row');
     }
 
     /**
@@ -298,8 +310,7 @@ class StatCounterTest extends SapphireTest
         $element->publishRecursive();
 
         $element = ElementStatCounters::get()->byID($element->ID);
-        /** @var GridField $grid */
-        $grid = $element->getCMSFields()->dataFieldByName('Stats');
+        $grid = $this->statsGrid($element);
         /** @var GridFieldOrderableRows $orderable */
         $orderable = $grid->getConfig()->getComponentByType(GridFieldOrderableRows::class);
         $orderable->setImmediateUpdate(false);
@@ -318,6 +329,14 @@ class StatCounterTest extends SapphireTest
         ElementStatCounters::get()->byID($element->ID)->publishRecursive();
 
         $this->assertSame(['Second', 'First'], $this->liveStatTitles($element->ID));
+    }
+
+    private function statsGrid(ElementStatCounters $element): GridField
+    {
+        /** @var GridField $grid */
+        $grid = $element->getCMSFields()->dataFieldByName('Stats');
+
+        return $grid;
     }
 
     private function createElement(): ElementStatCounters

@@ -11,6 +11,7 @@ use SilverStripe\Forms\GridField\GridFieldButtonRow;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\Versioned\GridFieldArchiveAction;
 use Symbiote\GridFieldExtensions\GridFieldAddNewInlineButton;
 use Symbiote\GridFieldExtensions\GridFieldEditableColumns;
 use Symbiote\GridFieldExtensions\GridFieldOrderableRows;
@@ -100,8 +101,12 @@ class ElementStatCounters extends BaseElement
             if ($stats = $fields->dataFieldByName('Stats')) {
                 $fields->removeByName('Stats');
                 $config = $stats->getConfig();
+                // Versioned's archive action replaces a deleting GridFieldDeleteAction
+                // and removes the stat from Live at once. Without it, a delete stays
+                // in draft until the block is published.
                 $config->removeComponentsByType([
                     GridFieldAddExistingAutocompleter::class,
+                    GridFieldArchiveAction::class,
                     GridFieldDeleteAction::class,
                     GridFieldAddNewButton::class,
                 ])->addComponents([
