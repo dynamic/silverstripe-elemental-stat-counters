@@ -4,10 +4,12 @@ namespace Dynamic\Elements\StatCounters\Test\Model;
 
 use Dynamic\Elements\StatCounters\Elements\ElementStatCounters;
 use Dynamic\Elements\StatCounters\Model\StatCounter;
+use ReflectionProperty;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\ORM\Connect\DBSchemaManager;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBCurrency;
 use SilverStripe\ORM\FieldType\DBDecimal;
@@ -266,6 +268,22 @@ class StatCounterTest extends SapphireTest
         $this->assertSame('', $this->buildOutput(), 'A second build publishes and prints nothing');
     }
 
+    public function testBuildOutputRestoresQuietSetting()
+    {
+        $original = $this->isSchemaQuiet();
+        try {
+            DB::quiet(false);
+            $this->buildOutput();
+            $this->assertFalse($this->isSchemaQuiet(), 'Output that was on stays on');
+
+            DB::quiet();
+            $this->buildOutput();
+            $this->assertTrue($this->isSchemaQuiet(), 'Output that was off stays off');
+        } finally {
+            DB::quiet($original);
+        }
+    }
+
     /**
      * Deleting a stat in the block's grid changes the draft only until the
      * block is published again.
@@ -373,20 +391,33 @@ class StatCounterTest extends SapphireTest
     }
 
     /**
-     * Run the build step and return what it prints.
+     * Run the build step and return what it prints. Schema output is turned on
+     * for the run, then the previous quiet setting is restored.
      */
     private function buildOutput(): string
     {
+        $wasQuiet = $this->isSchemaQuiet();
         DB::quiet(false);
         ob_start();
         try {
             StatCounter::singleton()->requireDefaultRecords();
         } finally {
             $output = ob_get_clean();
-            DB::quiet();
+            DB::quiet($wasQuiet);
         }
 
         return $output;
+    }
+
+    /**
+     * DBSchemaManager has no getter for the quiet setting, so read the property.
+     * "supressOutput" is spelled that way in the framework.
+     */
+    private function isSchemaQuiet(): bool
+    {
+        $property = new ReflectionProperty(DBSchemaManager::class, 'supressOutput');
+
+        return (bool) $property->getValue(DB::get_schema());
     }
 
     /**
